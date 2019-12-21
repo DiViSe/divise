@@ -1,0 +1,11 @@
+.DS_Store
+.idea/*
+*/target/*
+target/*
+project*
+*/.idea/*
+*/*.iml
+**/dist/**
+*/node_modules/
+version
+*.iml
