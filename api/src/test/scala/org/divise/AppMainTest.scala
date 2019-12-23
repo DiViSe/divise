@@ -1,4 +1,4 @@
-package org.devise
+package org.divise
 
 import org.scalatest.{MustMatchers, WordSpec}
 

@@ -1,4 +1,4 @@
-package org.devise.endpoints
+package org.divise.endpoints
 
 import enumeratum.values.{StringEnum, StringEnumEntry}
 

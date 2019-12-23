@@ -1,4 +1,4 @@
-package org.devise.endpoints
+package org.divise.endpoints
 
 import io.circe.{Decoder, Encoder, ObjectEncoder}
 import io.circe.generic.extras.Configuration

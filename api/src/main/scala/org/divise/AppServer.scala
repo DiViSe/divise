@@ -1,4 +1,4 @@
-package org.devise
+package org.divise
 
 import cats.effect._
 import cats.implicits._
@@ -6,8 +6,10 @@ import com.typesafe.config.ConfigFactory
 import doobie.util.ExecutionContexts
 import io.circe.config.parser
 import io.circe.generic.auto._
-import org.devise.config.{AppConfig, DbConfig}
-import org.devise.endpoints.ScheduleEndpoints
+import org.divise.config.{AppConfig, DbConfig}
+import org.divise.endpoints.ScheduleEndpoints
+import org.divise.repositories.ScheduleRepository
+import org.divise.services.ScheduleService
 import org.http4s.circe.{CirceEntityDecoder, CirceEntityEncoder}
 import org.http4s.client.blaze.BlazeClientBuilder
 import org.http4s.server.blaze.BlazeServerBuilder
@@ -15,6 +17,7 @@ import org.http4s.server.middleware._
 import org.http4s.server.{Router, Server => H4Server}
 import slogging.{LogLevel, LoggerConfig, PrintLoggerFactory, StrictLogging}
 import org.http4s.implicits._
+
 import scala.language.higherKinds
 
 object AppServer extends IOApp with CirceEntityDecoder with CirceEntityEncoder with StrictLogging {
@@ -34,7 +37,9 @@ object AppServer extends IOApp with CirceEntityDecoder with CirceEntityEncoder w
       ce     ← ExecutionContexts.fixedThreadPool[F](32)
       xa     ← DbConfig.dbTransactor(conf.db, ce, te)
       client ← BlazeClientBuilder[F](ce).resource
-      services = ScheduleEndpoints.endpoints[F]()
+      scheduleRepository = ScheduleRepository(xa)
+      scheduleService = ScheduleService(scheduleRepository)
+      services = ScheduleEndpoints.endpoints[F](scheduleService)
 
       httpApp = Router("/" → CORS(services)).orNotFound
       _      ← Resource.liftF(DbConfig.initializeDb(conf.db))

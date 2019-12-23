@@ -1,4 +1,4 @@
-package org.devise.config
+package org.divise.config
 
 import cats.effect.Async
 import cats.effect.ContextShift
